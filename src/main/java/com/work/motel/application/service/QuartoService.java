@@ -1,6 +1,7 @@
 package com.work.motel.application.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,20 +22,20 @@ public class QuartoService {
     return this.repository.getAll();
   }
 
-  public Quarto getById() {
-    return this.repository.getById();
+  public Optional<Quarto> getById(Integer id) {
+    return this.repository.getById(id);
   }
 
-  public Quarto create() {
-    return this.repository.create();
+  public Optional<Quarto> create(Optional<Quarto> data) {
+    return this.repository.create(data);
   }
 
-  public Quarto update() {
-    return this.repository.update();
+  public Optional<Quarto> update(Integer id, Quarto data) {
+    return this.repository.updateById(id, data);
   }
 
-  public void delete() {
-    this.repository.delete();
+  public void delete(Integer id) {
+    this.repository.deleteById(id);
   }
 
 }
