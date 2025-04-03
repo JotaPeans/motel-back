@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  spring-boot-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spring_boot_app
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: mvn spring-boot:run
+    depends_on:
+      - motel-db  # Garante que o container db (MySQL) seja iniciado primeiro
+    networks:
+      - spring-network
+
+  motel-db:
+    image: mysql/mysql-server:latest
+    container_name: motel-db
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_HOST=%
+      - MYSQL_DATABASE=motel_db
+      - MYSQL_INITDB_SKIP_TZINFO=true  # Ignora o carregamento de informações de fuso horário
+      - MYSQL_ENABLE_GTID=1  # Força a inicialização com GTID ativado
+    ports:
+      - '3307:3306'
+    networks:
+      - spring-network
+
+volumes:
+  mysql-volume:
+    driver: local
+
+networks:
+  spring-network:
+    driver: bridge
