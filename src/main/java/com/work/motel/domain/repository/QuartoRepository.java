@@ -52,8 +52,8 @@ public class QuartoRepository implements IBaseRepository {
       jdbcTemplate.update(
         sql,
         quarto.getNumero(),
-        QuartoTipo.SUITE.toString(),
-        QuartoStatus.DISPONIVEL.toString()
+        quarto.getTipo() != null ? quarto.getTipo().toString() : QuartoTipo.SUITE.toString(),
+        quarto.getStatus() != null ? quarto.getStatus().toString() : QuartoStatus.DISPONIVEL.toString()
       );
       return Optional.of(quarto);
     }
