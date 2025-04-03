@@ -61,7 +61,7 @@ public class QuartoRepository implements IBaseRepository {
   }
 
   @Override
-  public Optional<Quarto> updateById(Integer id, Quarto data) {
+  public Optional<Quarto> updateById(Integer id, Optional<Quarto> data) {
     throw new UnsupportedOperationException("Unimplemented method 'update'");
   }
 

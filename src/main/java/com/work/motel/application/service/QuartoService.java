@@ -30,7 +30,7 @@ public class QuartoService {
     return this.repository.create(data);
   }
 
-  public Optional<Quarto> update(Integer id, Quarto data) {
+  public Optional<Quarto> update(Integer id, Optional<Quarto> data) {
     return this.repository.updateById(id, data);
   }
 

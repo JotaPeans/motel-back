@@ -9,6 +9,6 @@ public interface IBaseRepository {
   List<Quarto> getAll();
   Optional<Quarto> getById(Integer id);
   Optional<Quarto> create(Optional<Quarto> data);
-  Optional<Quarto> updateById(Integer id, Quarto data);
+  Optional<Quarto> updateById(Integer id, Optional<Quarto> data);
   void deleteById(Integer id);
 }
