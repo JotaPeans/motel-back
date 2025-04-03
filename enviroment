@@ -1,0 +1,7 @@
+Create a new file called .env.local and put the follow variables
+
+MYSQL_HOST="put db host here"
+MYSQL_PORT="3306"
+MYSQL_DATABASE="put database name here"
+MYSQL_USER="put database user here"
+MYSQL_PASSWORD="put database password here"

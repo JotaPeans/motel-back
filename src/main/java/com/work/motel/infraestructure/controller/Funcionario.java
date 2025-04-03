@@ -1,4 +1,4 @@
-package com.work.motel.controller;
+package com.work.motel.infraestructure.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
