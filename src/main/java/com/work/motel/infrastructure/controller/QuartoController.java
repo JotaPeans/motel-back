@@ -1,4 +1,4 @@
-package com.work.motel.infraestructure.controller;
+package com.work.motel.infrastructure.controller;
 
 import java.util.HashMap;
 import java.util.List;
