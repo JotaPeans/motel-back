@@ -62,11 +62,48 @@ public class QuartoRepository implements IBaseRepository {
 
   @Override
   public Optional<Quarto> updateById(Integer id, Optional<Quarto> data) {
-    throw new UnsupportedOperationException("Unimplemented method 'update'");
+    if (data.isPresent()) {
+      Quarto quarto = data.get();
+
+      String sqlSelect = "SELECT COUNT(*) FROM Quarto WHERE id = ?";
+      Integer count = jdbcTemplate.queryForObject(sqlSelect, Integer.class, id);
+
+      if (count == null || count == 0) {
+        return null;
+      }
+
+      String sqlUpdate = "UPDATE Quarto SET numero = ?, tipo = ?, status = ? WHERE id = ?";
+
+      jdbcTemplate.update(
+        sqlUpdate,
+        quarto.getNumero(),
+        quarto.getTipo() != null ? quarto.getTipo().toString() : QuartoTipo.SUITE.toString(),
+        quarto.getStatus() != null ? quarto.getStatus().toString() : QuartoStatus.DISPONIVEL.toString(),
+        id
+      );
+
+      quarto.setId(id);
+      return Optional.of(quarto);
+    }
+
+    return null;
   }
 
   @Override
   public void deleteById(Integer id) {
-    throw new UnsupportedOperationException("Unimplemented method 'delete'");
+    String sqlDeleteReserva = "DELETE FROM Reserva WHERE quartoId = ?";
+    jdbcTemplate.update(sqlDeleteReserva, id);
+
+    String sqlDeletePossui = "DELETE FROM Possui WHERE quartoId = ?";
+    jdbcTemplate.update(sqlDeletePossui, id);
+
+    String sqlDeleteQuarto = "DELETE FROM Quarto WHERE id = ?";
+    int rowsAffectedQuarto = jdbcTemplate.update(sqlDeleteQuarto, id);
+
+    if (rowsAffectedQuarto == 0) {
+      throw new RuntimeException("Quarto não encontrado para o ID: " + id);
+    }
   }
+
+
 }
