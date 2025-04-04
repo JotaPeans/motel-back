@@ -16,14 +16,10 @@ import com.work.motel.domain.entity.Manager;
 public class ManagerRepository {
     private final JdbcTemplate jdbcTemplate;
 
-    private final RowMapper<Manager> rowMapper = (rs, rowNum) -> {
-        // Criando Manager usando o construtor correto com 'id' e 'funcionarioId'
-        Manager manager = new Manager();
-        manager.setId(rs.getInt("id"));
-        manager.setFuncionarioId(rs.getInt("funcionarioId"));
-        manager.setNome(rs.getString("nome"));
-        return manager;
-    };
+    private final RowMapper<Manager> rowMapper = (rs, rowNum) -> new Manager(
+        rs.getInt("id"),
+        rs.getInt("funcionarioId")
+    );
 
     @Autowired
     public ManagerRepository(DataSource dataSource) {
@@ -31,14 +27,12 @@ public class ManagerRepository {
     }
 
     public List<Manager> getAll() {
-        String sql = "SELECT g.id, g.funcionarioId, f.nome FROM Gerente g " +
-                     "JOIN Funcionario f ON g.funcionarioId = f.id";
+        String sql = "SELECT * FROM Gerente";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     public Optional<Manager> getById(Integer id) {
-        String sql = "SELECT g.id, g.funcionarioId, f.nome FROM Gerente g " +
-                     "JOIN Funcionario f ON g.funcionarioId = f.id WHERE g.id = ?";
+        String sql = "SELECT * FROM Gerente WHERE id = ?";
         List<Manager> results = jdbcTemplate.query(sql, rowMapper, id);
         return results.stream().findFirst();
     }
