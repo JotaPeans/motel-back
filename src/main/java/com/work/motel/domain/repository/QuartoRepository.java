@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import com.work.motel.domain.entity.Quarto;
 import com.work.motel.enums.QuartoStatus;
@@ -15,13 +14,6 @@ import javax.sql.DataSource;
 @Repository
 public class QuartoRepository {
   private final JdbcTemplate jdbcTemplate;
-  private final RowMapper<Quarto> rowMapper = (rs, rowNum) -> new Quarto(
-    rs.getInt("id"),
-    rs.getInt("numero"),
-    QuartoTipo.valueOf(rs.getString("tipo")),
-    QuartoStatus.valueOf(rs.getString("status")),
-    rs.getString("cliente_nome")
-  );
 
   // Injeção de dependência do JdbcTemplate
   @Autowired
