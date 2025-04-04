@@ -14,7 +14,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class Reserva {
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-  Integer Id;
+  Integer id;
 
   ReservaStatus status;
 
