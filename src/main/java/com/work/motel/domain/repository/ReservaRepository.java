@@ -37,7 +37,7 @@ public class ReservaRepository {
       Reserva reserva = new Reserva(
         rs.getInt("id"),
         ReservaStatus.valueOf(rs.getString("status")),
-        rs.getDate("data"),
+        rs.getTimestamp("data"),
         rs.getInt("funcionarioId"),
         rs.getInt("clienteId"),
         rs.getInt("quartoId"),
@@ -64,7 +64,7 @@ public class ReservaRepository {
       Reserva reserva = new Reserva(
         rs.getInt("id"),
         ReservaStatus.valueOf(rs.getString("status")),
-        rs.getDate("data"),
+        rs.getTimestamp("data"),
         rs.getInt("funcionarioId"),
         rs.getInt("clienteId"),
         rs.getInt("quartoId"),
@@ -92,7 +92,7 @@ public class ReservaRepository {
       Reserva reserva = new Reserva(
         rs.getInt("id"),
         ReservaStatus.valueOf(rs.getString("status")),
-        rs.getDate("data"),
+        rs.getTimestamp("data"),
         rs.getInt("funcionarioId"),
         rs.getInt("clienteId"),
         rs.getInt("quartoId"),
@@ -111,11 +111,10 @@ public class ReservaRepository {
   public Optional<Reserva> create(Optional<Reserva> data) {
     if (data.isPresent()) {
       Reserva reserva = data.get();
-      String sql = "INSERT INTO Reserva (status, funcionarioId, clienteId, quartoId) VALUES (?, ?, ?, ?)";
+      String sql = "INSERT INTO Reserva (funcionarioId, clienteId, quartoId) VALUES (?, ?, ?)";
 
       jdbcTemplate.update(
         sql,
-        reserva.getStatus().toString(),
         reserva.getFuncionarioId(),
         reserva.getClienteId(),
         reserva.getQuartoId()
