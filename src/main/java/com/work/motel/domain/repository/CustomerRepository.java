@@ -47,7 +47,7 @@ public class CustomerRepository {
     Map<String, Object> params = new HashMap<>();
     
     if (nome == null || nome.isEmpty()) {
-        sql = "SELECT * FROM Cliente";
+        sql = "SELECT * FROM Cliente c";
     } else {
         sql = "SELECT * FROM Cliente WHERE nome LIKE :nome";
         params.put("nome", "%" + nome + "%");

@@ -2,7 +2,7 @@ package com.work.motel.domain.entity;
 
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.work.motel.enums.QuartoStatus;
 import com.work.motel.enums.QuartoTipo;
 import com.work.motel.enums.ReservaStatus;
@@ -13,25 +13,25 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Reserva {
-  @JsonIgnore
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   Integer Id;
 
   ReservaStatus status;
 
-  @JsonIgnore
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   Date data;
 
   Integer funcionarioId;
   Integer clienteId;
   Integer quartoId;
 
-  @JsonIgnore
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   String cliente_nome;
 
-  @JsonIgnore
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   String quarto_numero;
-  @JsonIgnore
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   QuartoTipo quarto_tipo;
-  @JsonIgnore
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   QuartoStatus quarto_status;
 }

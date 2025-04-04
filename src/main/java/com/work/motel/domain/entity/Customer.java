@@ -1,6 +1,6 @@
 package com.work.motel.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Customer {
-  @JsonIgnore
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   Integer id;
   
   String nome;
