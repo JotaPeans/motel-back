@@ -23,14 +23,15 @@ public class QuartoRepository {
 
   public List<Quarto> getAll() {
     String sql = "SELECT q.*, " +
-               "MAX(CASE " +
-               "    WHEN r.status = 'CONFIRMADA' THEN c.nome " +
-               "    ELSE NULL " +
-               "END) AS cliente_nome " +
-               "FROM Quarto q " +
-               "LEFT JOIN Reserva r ON q.id = r.quartoId " +
-               "LEFT JOIN Cliente c ON r.clienteId = c.id " +
-               "GROUP BY q.id, q.numero, q.tipo, q.status";
+                  "r.id AS reserva_id, " +
+                  "MAX(CASE " +
+                  "   WHEN r.status = 'CONFIRMADA' THEN c.nome " +
+                  "   ELSE NULL " +
+                  "END) AS cliente_nome " +
+                  "FROM Quarto q " +
+                  "LEFT JOIN Reserva r ON q.id = r.quartoId " +
+                  "LEFT JOIN Cliente c ON r.clienteId = c.id " +
+                  "GROUP BY q.id, q.numero, q.tipo, q.status, r.id";
   
     List<Quarto> results = jdbcTemplate.query(sql, (rs, rowNum) -> {
       Quarto quarto = new Quarto(
@@ -38,7 +39,8 @@ public class QuartoRepository {
         rs.getInt("numero"),
         QuartoTipo.valueOf(rs.getString("tipo")),
         QuartoStatus.valueOf(rs.getString("status")),
-        rs.getString("cliente_nome")
+        rs.getString("cliente_nome"),
+        rs.getInt("reserva_id")
       );
       return quarto;
     });
@@ -48,6 +50,7 @@ public class QuartoRepository {
 
   public Optional<Quarto> getById(Integer id) {
     String sql = "SELECT q.*, " +
+               "r.id AS reserva_id, " +
                "CASE " +
                "    WHEN r.status = 'CONFIRMADA' THEN c.nome " +
                "    ELSE NULL " +
@@ -63,7 +66,8 @@ public class QuartoRepository {
         rs.getInt("numero"),
         QuartoTipo.valueOf(rs.getString("tipo")),
         QuartoStatus.valueOf(rs.getString("status")),
-        rs.getString("cliente_nome")
+        rs.getString("cliente_nome"),
+        rs.getInt("reserva_id")
       );
       return quarto;
     }, id);
