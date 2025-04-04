@@ -55,8 +55,27 @@ public class QuartoRepository {
   }
 
   public Optional<Quarto> getById(Integer id) {
-    String sql = "SELECT * FROM Quarto WHERE id = ?";
-    List<Quarto> results = jdbcTemplate.query(sql, rowMapper, id);
+    String sql = "SELECT q.*, " +
+               "CASE " +
+               "    WHEN r.status = 'CONFIRMADA' THEN c.nome " +
+               "    ELSE NULL " +
+               "END AS cliente_nome " +
+               "FROM Quarto q " +
+               "LEFT JOIN Reserva r ON q.id = r.quartoId AND r.status = 'CONFIRMADA' " +
+               "LEFT JOIN Cliente c ON r.clienteId = c.id " +
+               "WHERE q.id = ?";
+
+    List<Quarto> results = jdbcTemplate.query(sql, (rs, rowNum) -> {
+      Quarto quarto = new Quarto(
+        rs.getInt("id"),
+        rs.getInt("numero"),
+        QuartoTipo.valueOf(rs.getString("tipo")),
+        QuartoStatus.valueOf(rs.getString("status")),
+        rs.getString("cliente_nome")
+      );
+      return quarto;
+    }, id);
+    
     return results.stream().findFirst();
   }
 
