@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.work.motel.application.service.CustomerService;
@@ -25,8 +26,8 @@ public class CustomerController {
   private CustomerService service;  // Injeção de dependência diretamente no campo
 
   @GetMapping
-  public ResponseEntity<List<Customer>> getCustomers() {
-    List<Customer> response = service.getAll();
+  public ResponseEntity<List<Customer>> getCustomers(@RequestParam(required = false) String nome) {
+    List<Customer> response = service.getAll(nome);
     return ResponseEntity.ok(response);
   }
 

@@ -1,11 +1,14 @@
 package com.work.motel.domain.repository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import com.work.motel.domain.entity.Customer;
 import javax.sql.DataSource;
@@ -24,6 +27,9 @@ public class CustomerRepository {
   );
 
   @Autowired
+  private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+  @Autowired
   public CustomerRepository(DataSource dataSource) {
     this.jdbcTemplate = new JdbcTemplate(dataSource);
   }
@@ -36,11 +42,21 @@ public class CustomerRepository {
     return results.stream().toList();
   }
 
-  public List<Customer> getAll() {
-    String sql = "SELECT * FROM Cliente";
-    List<Customer> results = jdbcTemplate.query(sql, rowMapper);
+  public List<Customer> getAllByName(String nome) {
+    String sql;
+    Map<String, Object> params = new HashMap<>();
+    
+    if (nome == null || nome.isEmpty()) {
+        sql = "SELECT * FROM Cliente";
+    } else {
+        sql = "SELECT * FROM Cliente WHERE nome LIKE :nome";
+        params.put("nome", "%" + nome + "%");
+    }
+
+    List<Customer> results = namedParameterJdbcTemplate.query(sql, params, rowMapper);
+
     return results;
-  }
+}
 
   public Optional<Customer> getById(Integer id) {
     String sql = "SELECT * FROM Cliente WHERE id = ?";
