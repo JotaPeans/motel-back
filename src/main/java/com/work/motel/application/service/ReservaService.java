@@ -27,6 +27,10 @@ public class ReservaService {
       return reservaRepository.create(data);
     }
 
+    public void checkout(Integer id) {
+      reservaRepository.checkout(id);
+    }
+
     public Optional<Reserva> update(Integer id, Optional<Reserva> reserva) {
       return reservaRepository.updateById(id, reserva);
     }

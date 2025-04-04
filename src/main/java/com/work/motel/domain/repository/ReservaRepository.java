@@ -125,6 +125,11 @@ public class ReservaRepository {
     return Optional.empty();
   }
 
+  public void checkout(Integer id) {
+    String sql = "UPDATE Reserva SET status = ? WHERE id = ?";
+    jdbcTemplate.update(sql, ReservaStatus.FINALIZADA.toString(), id);
+  }
+
   public Optional<Reserva> updateById(Integer id, Optional<Reserva> data) {
     if (data.isPresent()) {
       Reserva reserva = data.get();
