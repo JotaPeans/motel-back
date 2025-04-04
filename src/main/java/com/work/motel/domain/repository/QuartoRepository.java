@@ -5,23 +5,15 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import com.work.motel.domain.entity.Quarto;
-import com.work.motel.domain.interfaces.IBaseRepository;
 import com.work.motel.enums.QuartoStatus;
 import com.work.motel.enums.QuartoTipo;
 import javax.sql.DataSource;
 
 @Repository
-public class QuartoRepository implements IBaseRepository {
+public class QuartoRepository {
   private final JdbcTemplate jdbcTemplate;
-  private final RowMapper<Quarto> rowMapper = (rs, rowNum) -> new Quarto(
-    rs.getInt("id"),
-    rs.getInt("numero"),
-    QuartoTipo.valueOf(rs.getString("tipo")),
-    QuartoStatus.valueOf(rs.getString("status"))
-  );
 
   // Injeção de dependência do JdbcTemplate
   @Autowired
@@ -29,21 +21,63 @@ public class QuartoRepository implements IBaseRepository {
     this.jdbcTemplate = new JdbcTemplate(dataSource); // Usando o DataSource configurado
   }
 
-  @Override
   public List<Quarto> getAll() {
-    String sql = "SELECT * FROM Quarto";
-    List<Quarto> results = jdbcTemplate.query(sql, rowMapper);
+    String sql = "SELECT q.*, " +
+                  "MAX(CASE " +
+                  "   WHEN r.status = 'CONFIRMADA' THEN r.id " +
+                  "   ELSE NULL " +
+                  "END) AS reserva_id, " +
+                  "MAX(CASE " +
+                  "   WHEN r.status = 'CONFIRMADA' THEN c.nome " +
+                  "   ELSE NULL " +
+                  "END) AS cliente_nome " +
+                  "FROM Quarto q " +
+                  "LEFT JOIN Reserva r ON q.id = r.quartoId " +
+                  "LEFT JOIN Cliente c ON r.clienteId = c.id " +
+                  "GROUP BY q.id, q.numero, q.tipo, q.status";
+  
+    List<Quarto> results = jdbcTemplate.query(sql, (rs, rowNum) -> {
+      Quarto quarto = new Quarto(
+        rs.getInt("id"),
+        rs.getInt("numero"),
+        QuartoTipo.valueOf(rs.getString("tipo")),
+        QuartoStatus.valueOf(rs.getString("status")),
+        rs.getString("cliente_nome"),
+        rs.getInt("reserva_id")
+      );
+      return quarto;
+    });
+  
     return results;
   }
 
-  @Override
   public Optional<Quarto> getById(Integer id) {
-    String sql = "SELECT * FROM Quarto WHERE id = ?";
-    List<Quarto> results = jdbcTemplate.query(sql, rowMapper, id);
+    String sql = "SELECT q.*, " +
+               "r.id AS reserva_id, " +
+               "CASE " +
+               "    WHEN r.status = 'CONFIRMADA' THEN c.nome " +
+               "    ELSE NULL " +
+               "END AS cliente_nome " +
+               "FROM Quarto q " +
+               "LEFT JOIN Reserva r ON q.id = r.quartoId AND r.status = 'CONFIRMADA' " +
+               "LEFT JOIN Cliente c ON r.clienteId = c.id " +
+               "WHERE q.id = ?";
+
+    List<Quarto> results = jdbcTemplate.query(sql, (rs, rowNum) -> {
+      Quarto quarto = new Quarto(
+        rs.getInt("id"),
+        rs.getInt("numero"),
+        QuartoTipo.valueOf(rs.getString("tipo")),
+        QuartoStatus.valueOf(rs.getString("status")),
+        rs.getString("cliente_nome"),
+        rs.getInt("reserva_id")
+      );
+      return quarto;
+    }, id);
+    
     return results.stream().findFirst();
   }
 
-  @Override
   public Optional<Quarto> create(Optional<Quarto> data) {
     if (data.isPresent()) {
       Quarto quarto = data.get();
@@ -60,7 +94,6 @@ public class QuartoRepository implements IBaseRepository {
     return null;
   }
 
-  @Override
   public Optional<Quarto> updateById(Integer id, Optional<Quarto> data) {
     if (data.isPresent()) {
       Quarto quarto = data.get();
@@ -89,7 +122,6 @@ public class QuartoRepository implements IBaseRepository {
     return null;
   }
 
-  @Override
   public void deleteById(Integer id) {
     String sqlDeleteReserva = "DELETE FROM Reserva WHERE quartoId = ?";
     jdbcTemplate.update(sqlDeleteReserva, id);
