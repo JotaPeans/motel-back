@@ -23,7 +23,10 @@ public class QuartoRepository {
 
   public List<Quarto> getAll() {
     String sql = "SELECT q.*, " +
-                  "r.id AS reserva_id, " +
+                  "MAX(CASE " +
+                  "   WHEN r.status = 'CONFIRMADA' THEN r.id " +
+                  "   ELSE NULL " +
+                  "END) AS reserva_id, " +
                   "MAX(CASE " +
                   "   WHEN r.status = 'CONFIRMADA' THEN c.nome " +
                   "   ELSE NULL " +
@@ -31,7 +34,7 @@ public class QuartoRepository {
                   "FROM Quarto q " +
                   "LEFT JOIN Reserva r ON q.id = r.quartoId " +
                   "LEFT JOIN Cliente c ON r.clienteId = c.id " +
-                  "GROUP BY q.id, q.numero, q.tipo, q.status, r.id";
+                  "GROUP BY q.id, q.numero, q.tipo, q.status";
   
     List<Quarto> results = jdbcTemplate.query(sql, (rs, rowNum) -> {
       Quarto quarto = new Quarto(
