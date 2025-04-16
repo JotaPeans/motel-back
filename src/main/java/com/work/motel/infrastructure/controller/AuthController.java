@@ -2,6 +2,7 @@ package com.work.motel.infrastructure.controller;
 
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,12 +16,12 @@ import com.work.motel.application.util.JwtResponse;
 
 @RestController
 @RequestMapping("/auth")
-public class FuncionarioController {
+public class AuthController {
 
     @Autowired
     private FuncionarioService service;
 
-    private JwtUtil jwtUtil = new JwtUtil();  // Instancia a classe JwtUtil
+    private JwtUtil jwtUtil = new JwtUtil();
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {

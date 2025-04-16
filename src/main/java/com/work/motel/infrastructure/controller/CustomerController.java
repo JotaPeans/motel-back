@@ -16,19 +16,36 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.work.motel.application.service.CustomerService;
+import com.work.motel.application.util.JwtUtil;
 import com.work.motel.domain.entity.Customer;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @RequestMapping("/customer")
 @RestController
 public class CustomerController {
 
   @Autowired
-  private CustomerService service;  // Injeção de dependência diretamente no campo
+  private CustomerService service; // Injeção de dependência diretamente no campo
+
+  private JwtUtil jwtUtil = new JwtUtil();
 
   @GetMapping
-  public ResponseEntity<List<Customer>> getCustomers(@RequestParam(required = false) String nome) {
-    List<Customer> response = service.getAll(nome);
-    return ResponseEntity.ok(response);
+  public ResponseEntity<List<Customer>> getCustomers(HttpServletRequest request,
+      @RequestParam(required = false) String nome) {
+    String authHeader = request.getHeader("Authorization");
+
+    if (authHeader != null && authHeader.startsWith("Bearer ")) {
+      String token = authHeader.substring(7);
+    
+      System.out.println(jwtUtil.decodeJWT(token).get("id"));
+  
+      List<Customer> response = service.getAll(nome);
+      return ResponseEntity.ok(response);
+    } else {
+      return ResponseEntity.ok(null);
+    }
+
   }
 
   @GetMapping("/room/{id}")
@@ -44,7 +61,8 @@ public class CustomerController {
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<Optional<Customer>> updateCustomer(@PathVariable Integer id, @RequestBody Optional<Customer> data) {
+  public ResponseEntity<Optional<Customer>> updateCustomer(@PathVariable Integer id,
+      @RequestBody Optional<Customer> data) {
     Optional<Customer> response = service.update(id, data);
     return ResponseEntity.ok(response);
   }
