@@ -21,7 +21,7 @@ import com.work.motel.domain.entity.Reserva;
 
 @RequestMapping("/reserva")
 @RestController
-public class ReservaController {
+public class ReservaController extends PrivateController {
 
     @Autowired
     private ReservaService service;

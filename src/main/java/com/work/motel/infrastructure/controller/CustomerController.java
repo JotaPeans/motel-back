@@ -16,67 +16,54 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.work.motel.application.service.CustomerService;
-import com.work.motel.application.util.JwtUtil;
 import com.work.motel.domain.entity.Customer;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 @RequestMapping("/customer")
 @RestController
-public class CustomerController {
+public class CustomerController extends PrivateController {
 
-  @Autowired
-  private CustomerService service; // Injeção de dependência diretamente no campo
+    @Autowired
+    private CustomerService service; // Injeção de dependência diretamente no campo
 
-  private JwtUtil jwtUtil = new JwtUtil();
-
-  @GetMapping
-  public ResponseEntity<List<Customer>> getCustomers(HttpServletRequest request,
-      @RequestParam(required = false) String nome) {
-    String authHeader = request.getHeader("Authorization");
-
-    if (authHeader != null && authHeader.startsWith("Bearer ")) {
-      String token = authHeader.substring(7);
-    
-      System.out.println(jwtUtil.decodeJWT(token).get("id"));
-  
-      List<Customer> response = service.getAll(nome);
-      return ResponseEntity.ok(response);
-    } else {
-      return ResponseEntity.ok(null);
+    @GetMapping
+    public ResponseEntity<List<Customer>> getCustomers(
+            HttpServletRequest request,
+            @RequestParam(required = false) String nome) {
+        List<Customer> response = service.getAll(nome);
+        return ResponseEntity.ok(response);
     }
 
-  }
+    @GetMapping("/room/{id}")
+    public ResponseEntity<List<Customer>> getCustomerByRoomId(@PathVariable Integer id) {
+        List<Customer> response = service.getCustomerByRoomId(id);
+        return ResponseEntity.ok(response);
+    }
 
-  @GetMapping("/room/{id}")
-  public ResponseEntity<List<Customer>> getCustomerByRoomId(@PathVariable Integer id) {
-    List<Customer> response = service.getCustomerByRoomId(id);
-    return ResponseEntity.ok(response);
-  }
+    @PostMapping
+    public ResponseEntity<Optional<Customer>> createCustomer(@RequestBody Customer data) {
+        Optional<Customer> response = service.create(Optional.of(data));
+        return ResponseEntity.ok(response);
+    }
 
-  @PostMapping
-  public ResponseEntity<Optional<Customer>> createCustomer(@RequestBody Customer data) {
-    Optional<Customer> response = service.create(Optional.of(data));
-    return ResponseEntity.ok(response);
-  }
+    @PutMapping("/{id}")
+    public ResponseEntity<Optional<Customer>> updateCustomer(@PathVariable Integer id,
+            @RequestBody Optional<Customer> data) {
+        Optional<Customer> response = service.update(id, data);
+        return ResponseEntity.ok(response);
+    }
 
-  @PutMapping("/{id}")
-  public ResponseEntity<Optional<Customer>> updateCustomer(@PathVariable Integer id,
-      @RequestBody Optional<Customer> data) {
-    Optional<Customer> response = service.update(id, data);
-    return ResponseEntity.ok(response);
-  }
+    @GetMapping("/{id}")
+    public ResponseEntity<Optional<Customer>> getCustomerById(@PathVariable Integer id) {
+        Optional<Customer> response = service.getById(id);
+        return ResponseEntity.ok(response);
+    }
 
-  @GetMapping("/{id}")
-  public ResponseEntity<Optional<Customer>> getCustomerById(@PathVariable Integer id) {
-    Optional<Customer> response = service.getById(id);
-    return ResponseEntity.ok(response);
-  }
-
-  @DeleteMapping("/{id}")
-  public ResponseEntity<Optional<Customer>> deleteCustomer(@PathVariable Integer id) {
-    service.delete(id);
-    return ResponseEntity.ok(null);
-  }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Optional<Customer>> deleteCustomer(@PathVariable Integer id) {
+        service.delete(id);
+        return ResponseEntity.ok(null);
+    }
 
 }

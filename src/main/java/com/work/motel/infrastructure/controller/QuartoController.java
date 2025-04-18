@@ -21,7 +21,7 @@ import com.work.motel.domain.entity.Quarto;
 
 @RequestMapping("/room")
 @RestController
-public class QuartoController {
+public class QuartoController extends PrivateController {
 
   @Autowired
   private QuartoService service;  // Injeção de dependência diretamente no campo

@@ -2,7 +2,6 @@ package com.work.motel.infrastructure.controller;
 
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,12 +19,15 @@ public class AuthController {
 
     @Autowired
     private FuncionarioService service;
-
-    private JwtUtil jwtUtil = new JwtUtil();
+    
+    @Autowired
+    private final JwtUtil jwtUtil = new JwtUtil();
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         Optional<Funcionario> funcionarioOpt = service.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
+
+        jwtUtil.init();
 
         if (funcionarioOpt.isPresent()) {
             Funcionario funcionario = funcionarioOpt.get();
