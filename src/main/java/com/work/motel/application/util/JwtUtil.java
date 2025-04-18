@@ -1,20 +1,28 @@
 package com.work.motel.application.util;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 import javax.crypto.SecretKey;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.util.Date;
 
+@Service
 public class JwtUtil {
 
-    private SecretKey secretKey;  // A chave secreta agora será do tipo SecretKey
-    private long expirationTime = 86400000L; // 1 dia em milissegundos (24 horas)
+    @Value("${jwt.secret}")
+    private String jwtSecret;
 
-    public JwtUtil() {
-        // Gerando uma chave segura de 256 bits usando a classe Keys
-        this.secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    public SecretKey secretKey;  // A chave secreta agora será do tipo SecretKey
+    private final long expirationTime = 86400000L; // 1 dia em milissegundos (24 horas)
+
+    public void init() {
+        byte[] keyBytes = jwtSecret.getBytes();
+        this.secretKey = Keys.hmacShaKeyFor(keyBytes);
     }
 
     // Método para gerar o JWT
@@ -36,5 +44,15 @@ public class JwtUtil {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public Claims decodeJWT(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims;
     }
 }

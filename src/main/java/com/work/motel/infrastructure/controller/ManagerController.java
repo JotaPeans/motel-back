@@ -19,7 +19,7 @@ import com.work.motel.domain.entity.Manager;
 
 @RequestMapping("/manager")
 @RestController
-public class ManagerController {
+public class ManagerController extends PrivateController {
 
     @Autowired
     private ManagerService service;  // Injeção de dependência diretamente no campo

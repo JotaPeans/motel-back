@@ -15,16 +15,19 @@ import com.work.motel.application.util.JwtResponse;
 
 @RestController
 @RequestMapping("/auth")
-public class FuncionarioController {
+public class AuthController {
 
     @Autowired
     private FuncionarioService service;
-
-    private JwtUtil jwtUtil = new JwtUtil();  // Instancia a classe JwtUtil
+    
+    @Autowired
+    private final JwtUtil jwtUtil = new JwtUtil();
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         Optional<Funcionario> funcionarioOpt = service.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
+
+        jwtUtil.init();
 
         if (funcionarioOpt.isPresent()) {
             Funcionario funcionario = funcionarioOpt.get();
