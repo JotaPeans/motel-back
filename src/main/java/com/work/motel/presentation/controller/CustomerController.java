@@ -1,4 +1,4 @@
-package com.work.motel.infrastructure.controller;
+package com.work.motel.presentation.controller;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.work.motel.application.service.CustomerService;
-import com.work.motel.domain.entity.Customer;
+import com.work.motel.domain.entities.Customer;
 
 import jakarta.servlet.http.HttpServletRequest;
 

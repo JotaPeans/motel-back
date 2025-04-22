@@ -1,4 +1,4 @@
-package com.work.motel.infrastructure.controller;
+package com.work.motel.presentation.controller;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.work.motel.application.service.ManagerService;
-import com.work.motel.domain.entity.Manager;
+import com.work.motel.domain.entities.Manager;
 
 @RequestMapping("/manager")
 @RestController

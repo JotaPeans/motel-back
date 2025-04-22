@@ -1,7 +1,7 @@
-package com.work.motel.domain.entity;
+package com.work.motel.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.work.motel.enums.FormaPagamento;
+import com.work.motel.domain.enums.FormaPagamento;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.work.motel.infrastructure.controller;
+package com.work.motel.presentation.controller;
 
 import java.util.Optional;
 
@@ -9,7 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.work.motel.application.service.ManagerService;
 import com.work.motel.application.util.JwtUtil;
-import com.work.motel.domain.entity.Manager;
+import com.work.motel.domain.entities.Manager;
 
 import jakarta.servlet.http.HttpServletRequest;
 

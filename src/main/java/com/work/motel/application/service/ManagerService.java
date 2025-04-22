@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.work.motel.domain.entity.Manager;
-import com.work.motel.domain.repository.ManagerRepository;
+import com.work.motel.domain.entities.Manager;
+import com.work.motel.infrastructure.repositories.ManagerRepository;
 
 @Service
 public class ManagerService {

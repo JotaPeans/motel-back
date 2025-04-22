@@ -1,4 +1,4 @@
-package com.work.motel.domain.repository;
+package com.work.motel.infrastructure.repositories;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import com.work.motel.domain.entity.Funcionario;
+import com.work.motel.domain.entities.Funcionario;
 
 @Repository
 public class FuncionarioRepository {

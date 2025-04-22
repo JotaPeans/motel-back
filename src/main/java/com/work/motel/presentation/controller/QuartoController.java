@@ -1,4 +1,4 @@
-package com.work.motel.infrastructure.controller;
+package com.work.motel.presentation.controller;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.work.motel.application.service.QuartoService;
-import com.work.motel.domain.entity.Quarto;
+import com.work.motel.domain.entities.Quarto;
 
 @RequestMapping("/room")
 @RestController

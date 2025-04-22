@@ -7,8 +7,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.work.motel.domain.entity.Funcionario;
-import com.work.motel.domain.repository.FuncionarioRepository;
+import com.work.motel.domain.entities.Funcionario;
+import com.work.motel.infrastructure.repositories.FuncionarioRepository;
 
 @Service
 public class FuncionarioService {

@@ -1,4 +1,4 @@
-package com.work.motel.infrastructure.controller;
+package com.work.motel.presentation.controller;
 
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,11 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.work.motel.application.service.FuncionarioService;
-import com.work.motel.domain.entity.Funcionario;
-import com.work.motel.domain.entity.LoginRequest;
-import com.work.motel.infrastructure.Serializers.CadastroRequest;
-import com.work.motel.infrastructure.Serializers.CadastroResponse;
 import com.work.motel.application.util.JwtUtil;
+import com.work.motel.domain.entities.Funcionario;
+import com.work.motel.domain.entities.LoginRequest;
+import com.work.motel.infrastructure.serializers.CadastroRequest;
+import com.work.motel.infrastructure.serializers.CadastroResponse;
 import com.work.motel.application.util.JwtResponse;
 
 @RestController

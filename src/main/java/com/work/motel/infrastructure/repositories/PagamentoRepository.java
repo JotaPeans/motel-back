@@ -1,4 +1,4 @@
-package com.work.motel.domain.repository;
+package com.work.motel.infrastructure.repositories;
 
 import java.sql.PreparedStatement;
 import java.util.List;
@@ -10,8 +10,9 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import com.work.motel.domain.entity.Pagamento;
-import com.work.motel.enums.FormaPagamento;
+
+import com.work.motel.domain.entities.Pagamento;
+import com.work.motel.domain.enums.FormaPagamento;
 
 import javax.sql.DataSource;
 

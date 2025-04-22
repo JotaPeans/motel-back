@@ -1,4 +1,4 @@
-package com.work.motel.enums;
+package com.work.motel.domain.enums;
 
 public enum ReservaStatus {
   CONFIRMADA,

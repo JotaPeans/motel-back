@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.work.motel.domain.entity.Customer;
-import com.work.motel.domain.repository.CustomerRepository;
+import com.work.motel.domain.entities.Customer;
+import com.work.motel.infrastructure.repositories.CustomerRepository;
 
 @Service
 public class CustomerService {

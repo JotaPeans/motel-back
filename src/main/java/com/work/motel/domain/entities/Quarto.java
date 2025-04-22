@@ -1,7 +1,7 @@
-package com.work.motel.domain.entity;
+package com.work.motel.domain.entities;
 
-import com.work.motel.enums.QuartoStatus;
-import com.work.motel.enums.QuartoTipo;
+import com.work.motel.domain.enums.QuartoStatus;
+import com.work.motel.domain.enums.QuartoTipo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

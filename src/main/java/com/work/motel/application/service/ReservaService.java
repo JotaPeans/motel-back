@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.work.motel.domain.entity.Reserva;
-import com.work.motel.domain.repository.ReservaRepository;
+import com.work.motel.domain.entities.Reserva;
+import com.work.motel.infrastructure.repositories.ReservaRepository;
 
 @Service
 public class ReservaService {

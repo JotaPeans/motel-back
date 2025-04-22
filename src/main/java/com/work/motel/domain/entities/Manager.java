@@ -1,4 +1,4 @@
-package com.work.motel.domain.entity;
+package com.work.motel.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

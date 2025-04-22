@@ -1,4 +1,4 @@
-package com.work.motel.domain.repository;
+package com.work.motel.infrastructure.repositories;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,10 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.work.motel.domain.entity.Reserva;
-import com.work.motel.enums.QuartoStatus;
-import com.work.motel.enums.QuartoTipo;
-import com.work.motel.enums.ReservaStatus;
+import com.work.motel.domain.entities.Reserva;
+import com.work.motel.domain.enums.QuartoStatus;
+import com.work.motel.domain.enums.QuartoTipo;
+import com.work.motel.domain.enums.ReservaStatus;
+
 import javax.sql.DataSource;
 
 @Repository

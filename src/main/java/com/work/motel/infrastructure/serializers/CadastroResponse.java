@@ -1,13 +1,11 @@
-package com.work.motel.infrastructure.Serializers;
+package com.work.motel.infrastructure.serializers;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class CadastroRequest {
-
+public class CadastroResponse {
     private String name;
     private String email;
-    private String password;
 }

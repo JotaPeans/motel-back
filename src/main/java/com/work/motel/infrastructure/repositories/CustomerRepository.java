@@ -1,4 +1,4 @@
-package com.work.motel.domain.repository;
+package com.work.motel.infrastructure.repositories;
 
 import java.sql.PreparedStatement;
 import java.util.HashMap;
@@ -13,7 +13,9 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import com.work.motel.domain.entity.Customer;
+
+import com.work.motel.domain.entities.Customer;
+
 import javax.sql.DataSource;
 
 @Repository

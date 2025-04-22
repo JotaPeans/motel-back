@@ -1,4 +1,4 @@
-package com.work.motel.domain.entity;
+package com.work.motel.domain.entities;
 
 public class LoginRequest {
 
