@@ -13,6 +13,7 @@ public class Quarto {
   Integer numero;
   QuartoTipo tipo;
   QuartoStatus status;
+  Float valor;
   String clienteNome;
   Integer reservaId;
 }

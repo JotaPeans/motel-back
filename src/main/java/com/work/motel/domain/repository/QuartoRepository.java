@@ -42,6 +42,7 @@ public class QuartoRepository {
         rs.getInt("numero"),
         QuartoTipo.valueOf(rs.getString("tipo")),
         QuartoStatus.valueOf(rs.getString("status")),
+        rs.getFloat("valor"),
         rs.getString("cliente_nome"),
         rs.getInt("reserva_id")
       );
@@ -69,6 +70,7 @@ public class QuartoRepository {
         rs.getInt("numero"),
         QuartoTipo.valueOf(rs.getString("tipo")),
         QuartoStatus.valueOf(rs.getString("status")),
+        rs.getFloat("valor"),
         rs.getString("cliente_nome"),
         rs.getInt("reserva_id")
       );
