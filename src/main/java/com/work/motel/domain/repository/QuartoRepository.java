@@ -83,13 +83,14 @@ public class QuartoRepository {
   public Optional<Quarto> create(Optional<Quarto> data) {
     if (data.isPresent()) {
       Quarto quarto = data.get();
-      String sql = "INSERT INTO Quarto (numero, tipo, status) VALUES (?, ?, ?)";
+      String sql = "INSERT INTO Quarto (numero, tipo, status, valor) VALUES (?, ?, ?, ?)";
 
       jdbcTemplate.update(
         sql,
         quarto.getNumero(),
         quarto.getTipo() != null ? quarto.getTipo().toString() : QuartoTipo.SUITE.toString(),
-        quarto.getStatus() != null ? quarto.getStatus().toString() : QuartoStatus.DISPONIVEL.toString()
+        quarto.getStatus() != null ? quarto.getStatus().toString() : QuartoStatus.DISPONIVEL.toString(),
+        quarto.getValor()
       );
       return Optional.of(quarto);
     }

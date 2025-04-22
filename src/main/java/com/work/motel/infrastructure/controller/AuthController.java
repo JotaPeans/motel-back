@@ -6,10 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.work.motel.application.service.FuncionarioService;
-import com.work.motel.domain.entity.CadastroRequest;
-import com.work.motel.domain.entity.CadastroResponse;
 import com.work.motel.domain.entity.Funcionario;
 import com.work.motel.domain.entity.LoginRequest;
+import com.work.motel.infrastructure.Serializers.CadastroRequest;
+import com.work.motel.infrastructure.Serializers.CadastroResponse;
 import com.work.motel.application.util.JwtUtil;
 import com.work.motel.application.util.JwtResponse;
 
