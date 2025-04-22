@@ -1,4 +1,4 @@
-package com.work.motel.infrastructure.serializers;
+package com.work.motel.application.serializers;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

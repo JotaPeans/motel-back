@@ -5,12 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.work.motel.application.DTOs.CadastroRequest;
+import com.work.motel.application.serializers.CadastroResponse;
 import com.work.motel.application.service.FuncionarioService;
 import com.work.motel.application.util.JwtUtil;
 import com.work.motel.domain.entities.Funcionario;
 import com.work.motel.domain.entities.LoginRequest;
-import com.work.motel.infrastructure.serializers.CadastroRequest;
-import com.work.motel.infrastructure.serializers.CadastroResponse;
 import com.work.motel.application.util.JwtResponse;
 
 @RestController
@@ -46,7 +46,6 @@ public class AuthController {
     @PostMapping("/cadastro")
     public ResponseEntity<?> cadastrar(@RequestBody CadastroRequest cadastroRequest) {
         // Chama o serviço para cadastrar um novo funcionário
-        System.out.println(cadastroRequest.getName() + " - " + cadastroRequest.getEmail() + " - " + cadastroRequest.getPassword());
         Funcionario funcionario = service.cadastrarFuncionario(
             cadastroRequest.getName(),
             cadastroRequest.getEmail(),
