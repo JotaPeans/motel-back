@@ -30,6 +30,10 @@ public class CustomerService {
     return this.repository.getById(id);
   }
 
+  public Optional<Customer> getByEmail(String email) {
+    return this.repository.getByEmail(email);
+  }
+
   public Optional<Customer> create(Optional<Customer> data) {
     return this.repository.create(data);
   }

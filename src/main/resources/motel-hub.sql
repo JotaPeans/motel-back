@@ -106,8 +106,9 @@ CREATE TABLE Consumo (
 CREATE TABLE Pagamento (
 	id INTEGER NOT NULL AUTO_INCREMENT,
 	clienteId INTEGER NOT NULL,
-	reservaId INTEGER NOT NULL,
-	consumoId INTEGER NOT NULL,
+	reservaId INTEGER,
+	consumoId INTEGER,
+	payment_provider_id BIGINT NOT NULL,
 	forma_pagamento ENUM("PIX", "CREDITO", "DEBITO", "DINHEIRO") DEFAULT "PIX" NOT NULL,
 	
 	PRIMARY KEY (id)

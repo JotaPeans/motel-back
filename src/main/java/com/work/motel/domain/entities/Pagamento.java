@@ -14,5 +14,6 @@ public class Pagamento {
   Integer clienteId;
   Integer reservaId;
   Integer consumoId;
+  Long payment_provider_id;
   FormaPagamento forma_Pagamento;
 }

@@ -13,6 +13,9 @@ public class MercadopagoDTO {
     @NotNull(message = "O valor do pagamento é obrigatório")
     private BigDecimal amount;
 
+    @NotNull(message = "O Id do cliente é obrigatório")
+    private Integer customer_id;
+
     @NotNull(message = "O Email do cliente é obrigatório")
     private String customer_email;
 

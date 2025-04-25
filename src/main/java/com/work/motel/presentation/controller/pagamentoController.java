@@ -15,11 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mercadopago.resources.payment.Payment;
 import com.work.motel.application.DTOs.MercadopagoDTO;
+import com.work.motel.application.DTOs.MercadopagoWebhookDTO;
 import com.work.motel.application.serializers.PixOrder;
 import com.work.motel.application.serializers.PointOrder;
 import com.work.motel.application.service.PagamentoService;
 import com.work.motel.domain.entities.Pagamento;
+import com.work.motel.domain.enums.FormaPagamento;
 import com.work.motel.infrastructure.integrations.MercadopagoIntegration;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -55,7 +58,6 @@ public class pagamentoController extends PrivateController {
         }
 
         return ResponseEntity.ok(order);
-
     }
 
     @PostMapping("/provider/credit")
@@ -83,6 +85,35 @@ public class pagamentoController extends PrivateController {
         }
 
         return ResponseEntity.ok(order);
+    }
+
+    @PostMapping("/provider/webhook")
+    public ResponseEntity<?> ProviderWebhook(@RequestBody MercadopagoWebhookDTO data) {
+        if(data.getAction().equals("payment.updated")) {
+            mercadopagoIntegration.init();
+
+            String paymentId = data.getData().getId();
+            Payment payment = mercadopagoIntegration.getPaymentById(Long.parseLong(paymentId));
+
+            Pagamento pagamento = new Pagamento(
+                null,
+                Integer.parseInt(payment.getMetadata().get("customer_id").toString()),
+                null,
+                null,
+                Long.parseLong(paymentId),
+                FormaPagamento.valueOf(payment.getMetadata().get("forma_pagamento").toString())
+            );
+
+            Optional<Pagamento> paymentToCreate = Optional.ofNullable(pagamento);
+            service.create(paymentToCreate);
+        }
+        return ResponseEntity.ok(null);
+    }
+
+    @GetMapping("/provider/{id}")
+    public ResponseEntity<Optional<Pagamento>> getPagamentoByProviderId(@PathVariable String id) {
+        Optional<Pagamento> response = service.getByPaymentProviderId(id);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping

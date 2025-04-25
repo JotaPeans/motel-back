@@ -1,6 +1,7 @@
 package com.work.motel.infrastructure.repositories;
 
 import java.sql.PreparedStatement;
+import java.sql.Types;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +26,7 @@ public class PagamentoRepository {
       rs.getInt("clienteId"),
       rs.getInt("reservaId"),
       rs.getInt("consumoId"),
+      rs.getLong("payment_provider_id"),
       FormaPagamento.valueOf(rs.getString("forma_pagamento")));
 
   @Autowired
@@ -47,19 +49,26 @@ public class PagamentoRepository {
     return results.stream().findFirst();
   }
 
+  public Optional<Pagamento> getByPaymentProviderId(String id) {
+    String sql = "SELECT * FROM Pagamento WHERE payment_provider_id = ?";
+    List<Pagamento> results = jdbcTemplate.query(sql, rowMapper, id);
+    return results.stream().findFirst();
+  }
+
   public Optional<Pagamento> create(Optional<Pagamento> data) {
     if (data.isPresent()) {
       Pagamento Pagamento = data.get();
-      String sql = "INSERT INTO Pagamento (clienteId, reservaId, consumoId, forma_pagamento) VALUES (?, ?, ?, ?)";
+      String sql = "INSERT INTO Pagamento (clienteId, reservaId, consumoId, payment_provider_id, forma_pagamento) VALUES (?, ?, ?, ?, ?)";
 
       KeyHolder keyHolder = new GeneratedKeyHolder();
 
       jdbcTemplate.update(connection -> {
         PreparedStatement ps = connection.prepareStatement(sql, new String[] { "id" });
         ps.setInt(1, Pagamento.getClienteId());
-        ps.setInt(2, Pagamento.getReservaId());
-        ps.setInt(3, Pagamento.getConsumoId());
-        ps.setString(4, Pagamento.getForma_Pagamento().toString());
+        ps.setNull(2, Types.NULL);
+        ps.setNull(3, Types.NULL);
+        ps.setLong(4, Pagamento.getPayment_provider_id());
+        ps.setString(5, Pagamento.getForma_Pagamento().toString());
         return ps;
       }, keyHolder);
 

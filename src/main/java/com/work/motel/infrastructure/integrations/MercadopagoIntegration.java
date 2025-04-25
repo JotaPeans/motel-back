@@ -1,6 +1,8 @@
 package com.work.motel.infrastructure.integrations;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -34,18 +36,31 @@ public class MercadopagoIntegration {
     MercadoPagoConfig.setAccessToken(accessToken);
   }
 
-  // TODO: Quando o pagamento for efetuado com sucesso, será recebido um webhook, neste webhook ira conter o id da transação, cujo usaremos para armazenar o tabela Pagamentos. No front, vai ficar requisitando para um novo endpoint para saber se a entidade de Pagamento foi criada com o id do mercado pago x. 
+  public Payment getPaymentById(long id) {
+    try {
+      Payment payment = paymentClient.get(id);
+      return payment;
+    }
+    catch (MPApiException | MPException e) {
+      return null;
+    }
+  }
 
   public PixOrder createPixOrder(MercadopagoDTO data) {
+    Map<String,Object> metadata = new HashMap<>();
+    metadata.put("customer_id", data.getCustomer_id());
+    metadata.put("forma_pagamento", "PIX");
+
     PaymentCreateRequest request = PaymentCreateRequest.builder()
         .transactionAmount(data.getAmount())
         .paymentMethodId("pix")
+        .metadata(metadata)
         .payer(
             PaymentPayerRequest.builder()
                 .email(data.getCustomer_email())
                 .firstName(data.getCustomer_name())
                 .build())
-        .notificationUrl(notificationUrl)
+        .notificationUrl(notificationUrl + "/webhooks/payment/mercadopago")
         .installments(0)
         .build();
 

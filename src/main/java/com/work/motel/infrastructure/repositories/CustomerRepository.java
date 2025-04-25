@@ -69,6 +69,12 @@ public class CustomerRepository {
     return results.stream().findFirst();
   }
 
+  public Optional<Customer> getByEmail(String email) {
+    String sql = "SELECT * FROM Cliente WHERE email = ?";
+    List<Customer> results = jdbcTemplate.query(sql, rowMapper, email);
+    return results.stream().findFirst();
+  }
+
   public Optional<Customer> create(Optional<Customer> data) {
     if (data.isPresent()) {
       Customer customer = data.get();

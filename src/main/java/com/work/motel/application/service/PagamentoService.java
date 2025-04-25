@@ -26,6 +26,10 @@ public class PagamentoService {
     return this.repository.getById(id);
   }
 
+  public Optional<Pagamento> getByPaymentProviderId(String id) {
+    return this.repository.getByPaymentProviderId(id);
+  }
+
   public Optional<Pagamento> create(Optional<Pagamento> data) {
     return this.repository.create(data);
   }

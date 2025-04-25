@@ -47,6 +47,7 @@ INSERT INTO Consumo (produtoId, servicoId, clienteId, quantidade, valor) VALUES
 (2, NULL, 2, 2, 10.00);   -- Cliente 2 consumiu 2 águas minerais
 
 -- Inserindo pagamentos (assumindo consumoId = 1 e 2 e reservaId = 1 e 2)
-INSERT INTO Pagamento (clienteId, reservaId, consumoId, forma_pagamento) VALUES
-(1, 1, 1, 'CREDITO'),
-(2, 2, 2, 'PIX');
+INSERT INTO Pagamento (clienteId, reservaId, consumoId, payment_provider_id, forma_pagamento) VALUES
+(1, 1, 1, 123123123123123, 'CREDITO'),
+(2, 2, 2, 432452345234523, 'PIX'),
+(1, 3, NULL, 1231231231, 'PIX');
