@@ -28,7 +28,9 @@ public class WebhooksController {
 
     @PostMapping("/payment/mercadopago")
     public ResponseEntity<?> ProviderWebhook(@RequestBody MercadopagoWebhookDTO data) {
-        if(data.getAction().equals("payment.updated")) {
+        String action = data.getAction();
+
+        if(action != null && action.equals("payment.updated")) {
             mercadopagoIntegration.init();
 
             String paymentId = data.getData().getId();

@@ -15,10 +15,10 @@ INSERT INTO Servico (nome, descricao, valor) VALUES
 ('Spa Facial', 'Tratamento facial revitalizante', 120.00);
 
 -- Inserindo produtos
-INSERT INTO Produto (nome, tipo, valor) VALUES
-('Shampoo', 'Higiene', 104.99),
-('Sabonete', 'Higiene', 104.99),
-('Água Mineral', 'Consumo', 104.99);
+INSERT INTO Produto (nome, tipo, valor, custo) VALUES
+('Shampoo', 'Higiene', 104.99, 20.00),
+('Sabonete', 'Higiene', 104.99, 19.00),
+('Água Mineral', 'Consumo', 104.99, 29.99);
 
 -- Inserindo quartos
 INSERT INTO Quarto (numero, tipo, valor) VALUES

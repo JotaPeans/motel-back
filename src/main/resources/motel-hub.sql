@@ -58,6 +58,7 @@ CREATE TABLE Produto (
     nome VARCHAR(255) NOT NULL,
     tipo VARCHAR(255) NOT NULL,
     valor DOUBLE NOT NULL,
+    custo DOUBLE NOT NULL,
 
     PRIMARY KEY (id)
 );
