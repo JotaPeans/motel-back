@@ -29,7 +29,7 @@ public class ReservaController extends PrivateController {
     @GetMapping
     public ResponseEntity<List<Reserva>> getAllReservas(
       @RequestParam(defaultValue = "1") int page, 
-      @RequestParam(defaultValue = "100000") int size
+      @RequestParam(defaultValue = "10") int size
     ) {
       List<Reserva> response = service.getAll(page, size);
       return ResponseEntity.ok(response);

@@ -33,13 +33,9 @@ INSERT INTO Possui (produtoId, quartoId, quantidade) VALUES
 (3, 2, 5);  -- Água mineral no quarto 102
 
 -- Inserindo reservas (assumindo funcionarioId = 1)
-INSERT INTO Reserva (status, funcionarioId, clienteId, quartoId) VALUES
-("FINALIZADA", 1, 1, 1),
-("CONFIRMADA", 1, 2, 2),
-("FINALIZADA", 1, 1, 1),
-("FINALIZADA", 1, 2, 2),
-("CANCELADA", 1, 1, 1),
-("FINALIZADA", 1, 2, 2);
+INSERT INTO Reserva (funcionarioId, clienteId, quartoId) VALUES
+(1, 1, 1),
+(1, 2, 3);
 
 -- Inserindo consumo (serviço ou produto pode ser nulo, mas cliente sempre obrigatório)
 INSERT INTO Consumo (produtoId, servicoId, clienteId, quantidade, valor) VALUES
@@ -49,5 +45,4 @@ INSERT INTO Consumo (produtoId, servicoId, clienteId, quantidade, valor) VALUES
 -- Inserindo pagamentos (assumindo consumoId = 1 e 2 e reservaId = 1 e 2)
 INSERT INTO Pagamento (clienteId, reservaId, consumoId, payment_provider_id, forma_pagamento) VALUES
 (1, 1, 1, 123123123123123, 'CREDITO'),
-(2, 2, 2, 432452345234523, 'PIX'),
-(1, 3, NULL, 1231231231, 'PIX');
+(2, 2, 2, 432452345234523, 'PIX');
