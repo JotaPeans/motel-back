@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,14 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mercadopago.resources.payment.Payment;
+import com.mercadopago.resources.point.PointCancelPaymentIntent;
+import com.work.motel.application.DTOs.AddReservationToPaymentByIdDTO;
 import com.work.motel.application.DTOs.MercadopagoDTO;
-import com.work.motel.application.DTOs.MercadopagoWebhookDTO;
 import com.work.motel.application.serializers.PixOrder;
 import com.work.motel.application.serializers.PointOrder;
 import com.work.motel.application.service.PagamentoService;
 import com.work.motel.domain.entities.Pagamento;
-import com.work.motel.domain.enums.FormaPagamento;
 import com.work.motel.infrastructure.integrations.MercadopagoIntegration;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,7 +33,7 @@ import jakarta.validation.Valid;
 public class pagamentoController extends PrivateController {
 
     @Autowired
-    private PagamentoService service; // Injeção de dependência diretamente no campo
+    private PagamentoService paymentService; // Injeção de dependência diretamente no campo
 
     @Autowired
     private MercadopagoIntegration mercadopagoIntegration;
@@ -43,7 +43,7 @@ public class pagamentoController extends PrivateController {
             HttpServletRequest request,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size) {
-        List<Pagamento> response = service.getAll(page, size);
+        List<Pagamento> response = paymentService.getAll(page, size);
         return ResponseEntity.ok(response);
     }
 
@@ -71,7 +71,6 @@ public class pagamentoController extends PrivateController {
         }
 
         return ResponseEntity.ok(order);
-
     }
 
     @PostMapping("/provider/debit")
@@ -87,50 +86,46 @@ public class pagamentoController extends PrivateController {
         return ResponseEntity.ok(order);
     }
 
-    @PostMapping("/provider/webhook")
-    public ResponseEntity<?> ProviderWebhook(@RequestBody MercadopagoWebhookDTO data) {
-        if(data.getAction().equals("payment.updated")) {
-            mercadopagoIntegration.init();
+    @DeleteMapping("/provider/pdv/{id}")
+    public ResponseEntity<?> CancelPdvPayment(@PathVariable String id) {
+        mercadopagoIntegration.init();
 
-            String paymentId = data.getData().getId();
-            Payment payment = mercadopagoIntegration.getPaymentById(Long.parseLong(paymentId));
+        PointCancelPaymentIntent data = mercadopagoIntegration.cancelPdvPayment(id);
 
-            Pagamento pagamento = new Pagamento(
-                null,
-                Integer.parseInt(payment.getMetadata().get("customer_id").toString()),
-                null,
-                null,
-                Long.parseLong(paymentId),
-                FormaPagamento.valueOf(payment.getMetadata().get("forma_pagamento").toString())
-            );
-
-            Optional<Pagamento> paymentToCreate = Optional.ofNullable(pagamento);
-            service.create(paymentToCreate);
+        if (data == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao solicitar pagamento por debito");
         }
-        return ResponseEntity.ok(null);
+
+        return ResponseEntity.ok(data);
     }
 
     @GetMapping("/provider/{id}")
     public ResponseEntity<Optional<Pagamento>> getPagamentoByProviderId(@PathVariable String id) {
-        Optional<Pagamento> response = service.getByPaymentProviderId(id);
+        Optional<Pagamento> response = paymentService.getByPaymentProviderId(id);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
     public ResponseEntity<Optional<Pagamento>> createPagamento(@RequestBody Pagamento data) {
-        Optional<Pagamento> response = service.create(Optional.of(data));
+        Optional<Pagamento> response = paymentService.create(Optional.of(data));
         return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> addReservationToPaymentById(@PathVariable Integer id, @RequestBody AddReservationToPaymentByIdDTO data) {
+        paymentService.addReservation(id, data.getReservaId());
+        return ResponseEntity.ok("Reserva associada com sucesso!");
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Optional<Pagamento>> getPagamentoById(@PathVariable Integer id) {
-        Optional<Pagamento> response = service.getById(id);
+        Optional<Pagamento> response = paymentService.getById(id);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Optional<Pagamento>> deletePagamento(@PathVariable Integer id) {
-        service.delete(id);
+        paymentService.delete(id);
         return ResponseEntity.ok(null);
     }
 

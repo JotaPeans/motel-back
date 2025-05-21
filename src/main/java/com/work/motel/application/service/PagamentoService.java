@@ -26,6 +26,10 @@ public class PagamentoService {
     return this.repository.getById(id);
   }
 
+  public void addReservation(Integer paymentId, Integer ReservationId) {
+    this.repository.addReservation(paymentId, ReservationId);
+  }
+
   public Optional<Pagamento> getByPaymentProviderId(String id) {
     return this.repository.getByPaymentProviderId(id);
   }
