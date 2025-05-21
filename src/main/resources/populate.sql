@@ -44,5 +44,5 @@ INSERT INTO Consumo (produtoId, servicoId, clienteId, quantidade, valor) VALUES
 
 -- Inserindo pagamentos (assumindo consumoId = 1 e 2 e reservaId = 1 e 2)
 INSERT INTO Pagamento (clienteId, reservaId, consumoId, payment_provider_id, forma_pagamento) VALUES
-(1, 1, 1, 123123123123123, 'CREDITO'),
-(2, 2, 2, 432452345234523, 'PIX');
+(1, 1, 1, "123123123123123", 'CREDITO'),
+(2, 2, 2, "432452345234523", 'PIX');

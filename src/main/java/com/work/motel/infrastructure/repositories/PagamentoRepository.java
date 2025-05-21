@@ -26,7 +26,7 @@ public class PagamentoRepository {
       rs.getInt("clienteId"),
       rs.getInt("reservaId"),
       rs.getInt("consumoId"),
-      rs.getLong("payment_provider_id"),
+      rs.getString("payment_provider_id"),
       FormaPagamento.valueOf(rs.getString("forma_pagamento")));
 
   @Autowired
@@ -49,6 +49,14 @@ public class PagamentoRepository {
     return results.stream().findFirst();
   }
 
+  public void addReservation(Integer paymentId, Integer reservationId) {
+    String sql = "UPDATE Pagamento p " +
+        "SET reservaId = ? " +
+        "WHERE p.id = ?;";
+
+    jdbcTemplate.update(sql, reservationId, paymentId);
+  }
+
   public Optional<Pagamento> getByPaymentProviderId(String id) {
     String sql = "SELECT * FROM Pagamento WHERE payment_provider_id = ?";
     List<Pagamento> results = jdbcTemplate.query(sql, rowMapper, id);
@@ -57,24 +65,24 @@ public class PagamentoRepository {
 
   public Optional<Pagamento> create(Optional<Pagamento> data) {
     if (data.isPresent()) {
-      Pagamento Pagamento = data.get();
+      Pagamento pagamento = data.get();
       String sql = "INSERT INTO Pagamento (clienteId, reservaId, consumoId, payment_provider_id, forma_pagamento) VALUES (?, ?, ?, ?, ?)";
 
       KeyHolder keyHolder = new GeneratedKeyHolder();
 
       jdbcTemplate.update(connection -> {
         PreparedStatement ps = connection.prepareStatement(sql, new String[] { "id" });
-        ps.setInt(1, Pagamento.getClienteId());
+        ps.setInt(1, pagamento.getClienteId());
         ps.setNull(2, Types.NULL);
         ps.setNull(3, Types.NULL);
-        ps.setLong(4, Pagamento.getPayment_provider_id());
-        ps.setString(5, Pagamento.getForma_Pagamento().toString());
+        ps.setString(4, pagamento.getPayment_provider_id());
+        ps.setString(5, pagamento.getForma_Pagamento().toString());
         return ps;
       }, keyHolder);
 
-      Pagamento.setId(keyHolder.getKey().intValue());
+      pagamento.setId(keyHolder.getKey().intValue());
 
-      return Optional.of(Pagamento);
+      return Optional.of(pagamento);
     }
     return Optional.empty();
   }

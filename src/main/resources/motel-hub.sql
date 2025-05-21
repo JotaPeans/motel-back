@@ -110,7 +110,7 @@ CREATE TABLE Pagamento (
 	clienteId INTEGER NOT NULL,
 	reservaId INTEGER,
 	consumoId INTEGER,
-	payment_provider_id BIGINT NOT NULL,
+	payment_provider_id VARCHAR(255) NOT NULL,
 	forma_pagamento ENUM("PIX", "CREDITO", "DEBITO", "DINHEIRO") DEFAULT "PIX" NOT NULL,
 	
 	PRIMARY KEY (id)

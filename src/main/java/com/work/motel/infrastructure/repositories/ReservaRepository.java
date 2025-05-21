@@ -1,10 +1,13 @@
 package com.work.motel.infrastructure.repositories;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.work.motel.domain.entities.Reserva;
@@ -35,7 +38,7 @@ public class ReservaRepository {
         "LEFT JOIN Cliente c ON r.clienteId = c.id " +
         "LEFT JOIN Quarto q ON r.quartoId = q.id " +
         "LEFT JOIN Pagamento p ON r.id = p.reservaId " +
-        "ORDER BY r.id LIMIT ? OFFSET ?";
+        "ORDER BY r.data_checkin DESC LIMIT ? OFFSET ?";
 
     List<Reserva> results = jdbcTemplate.query(sql, (rs, rowNum) -> {
       Reserva reserva = new Reserva(
@@ -127,11 +130,17 @@ public class ReservaRepository {
       Reserva reserva = data.get();
       String sql = "INSERT INTO Reserva (funcionarioId, clienteId, quartoId) VALUES (?, ?, ?)";
 
-      jdbcTemplate.update(
-          sql,
-          reserva.getFuncionarioId(),
-          reserva.getClienteId(),
-          reserva.getQuartoId());
+      KeyHolder keyHolder = new GeneratedKeyHolder();
+
+      jdbcTemplate.update(connection -> {
+        PreparedStatement ps = connection.prepareStatement(sql, new String[] { "id" });
+        ps.setInt(1, reserva.getFuncionarioId());
+        ps.setInt(2, reserva.getClienteId());
+        ps.setInt(3, reserva.getQuartoId());
+        return ps;
+      }, keyHolder);
+
+      reserva.setId(keyHolder.getKey().intValue());
 
       return Optional.of(reserva);
     }
@@ -139,7 +148,7 @@ public class ReservaRepository {
   }
 
   public void checkout(Integer id) {
-    String sql = "UPDATE Reserva SET status = ? WHERE id = ?";
+    String sql = "UPDATE Reserva SET status = ?, data_checkout = CURRENT_TIMESTAMP WHERE id = ?";
     jdbcTemplate.update(sql, ReservaStatus.FINALIZADA.toString(), id);
   }
 
