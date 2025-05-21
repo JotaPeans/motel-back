@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.work.motel.domain.entities.Reserva;
+import com.work.motel.domain.enums.FormaPagamento;
 import com.work.motel.domain.enums.QuartoStatus;
 import com.work.motel.domain.enums.QuartoTipo;
 import com.work.motel.domain.enums.ReservaStatus;
@@ -28,52 +29,60 @@ public class ReservaRepository {
     // Calculando o offset para a paginação
     int offset = (page - 1) * size;
 
-    String sql = "SELECT r.*, c.nome AS cliente_nome, q.numero AS quarto_numero, q.tipo AS quarto_tipo, q.status AS quarto_status " +
-                 "FROM Reserva r " +
-                 "LEFT JOIN Cliente c ON r.clienteId = c.id " +
-                 "LEFT JOIN Quarto q ON r.quartoId = q.id " +
-                 "ORDER BY r.id LIMIT ? OFFSET ?";
+    String sql = "SELECT r.*, c.nome AS cliente_nome, q.numero AS quarto_numero, " +
+        "q.tipo AS quarto_tipo, q.status AS quarto_status, q.valor AS quarto_preco, p.forma_pagamento AS forma_pagamento " +
+        "FROM Reserva r " +
+        "LEFT JOIN Cliente c ON r.clienteId = c.id " +
+        "LEFT JOIN Quarto q ON r.quartoId = q.id " +
+        "LEFT JOIN Pagamento p ON r.id = p.reservaId " +
+        "ORDER BY r.id LIMIT ? OFFSET ?";
 
     List<Reserva> results = jdbcTemplate.query(sql, (rs, rowNum) -> {
       Reserva reserva = new Reserva(
-        rs.getInt("id"),
-        ReservaStatus.valueOf(rs.getString("status")),
-        rs.getTimestamp("data"),
-        rs.getInt("funcionarioId"),
-        rs.getInt("clienteId"),
-        rs.getInt("quartoId"),
-        rs.getString("cliente_nome"),
-        rs.getString("quarto_numero"),
-        QuartoTipo.valueOf(rs.getString("quarto_tipo")),
-        QuartoStatus.valueOf(rs.getString("quarto_status"))
-      );
+          rs.getInt("id"),
+          ReservaStatus.valueOf(rs.getString("status")),
+          rs.getTimestamp("data_checkin"),
+          rs.getTimestamp("data_checkout"),
+          rs.getInt("funcionarioId"),
+          rs.getInt("clienteId"),
+          rs.getInt("quartoId"),
+          rs.getString("cliente_nome"),
+          rs.getString("quarto_numero"),
+          QuartoTipo.valueOf(rs.getString("quarto_tipo")),
+          QuartoStatus.valueOf(rs.getString("quarto_status")),
+          rs.getDouble("quarto_preco"),
+          FormaPagamento.valueOf(rs.getString("forma_pagamento")));
 
       return reserva;
     }, size, offset);
-  
+
     return results;
   }
 
   public Optional<Reserva> getById(Integer id) {
-    String sql = "SELECT r.*, c.nome AS cliente_nome, q.numero AS quarto_numero, q.tipo AS quarto_tipo, q.status AS quarto_status " +
-                 "FROM Reserva r " +
-                 "LEFT JOIN Cliente c ON r.clienteId = c.id " +
-                 "LEFT JOIN Quarto q ON r.quartoId = q.id " +
-                 "WHERE r.id = ?";
+    String sql = "SELECT r.*, c.nome AS cliente_nome, q.numero AS quarto_numero, " +
+        "q.tipo AS quarto_tipo, q.status AS quarto_status, q.valor AS quarto_preco, p.forma_pagamento AS forma_pagamento " +
+        "FROM Reserva r " +
+        "LEFT JOIN Cliente c ON r.clienteId = c.id " +
+        "LEFT JOIN Quarto q ON r.quartoId = q.id " +
+        "LEFT JOIN Pagamento p ON r.id = p.reservaId " +
+        "WHERE r.id = ?";
 
     List<Reserva> results = jdbcTemplate.query(sql, (rs, rowNum) -> {
       Reserva reserva = new Reserva(
-        rs.getInt("id"),
-        ReservaStatus.valueOf(rs.getString("status")),
-        rs.getTimestamp("data"),
-        rs.getInt("funcionarioId"),
-        rs.getInt("clienteId"),
-        rs.getInt("quartoId"),
-        rs.getString("cliente_nome"),
-        rs.getString("quarto_numero"),
-        QuartoTipo.valueOf(rs.getString("quarto_tipo")),
-        QuartoStatus.valueOf(rs.getString("quarto_status"))
-      );
+          rs.getInt("id"),
+          ReservaStatus.valueOf(rs.getString("status")),
+          rs.getTimestamp("data_checkin"),
+          rs.getTimestamp("data_checkout"),
+          rs.getInt("funcionarioId"),
+          rs.getInt("clienteId"),
+          rs.getInt("quartoId"),
+          rs.getString("cliente_nome"),
+          rs.getString("quarto_numero"),
+          QuartoTipo.valueOf(rs.getString("quarto_tipo")),
+          QuartoStatus.valueOf(rs.getString("quarto_status")),
+          rs.getDouble("quarto_preco"),
+          FormaPagamento.valueOf(rs.getString("forma_pagamento")));
 
       return reserva;
     }, id);
@@ -82,32 +91,36 @@ public class ReservaRepository {
   }
 
   public List<Reserva> getByRoomId(Integer quartoId) {
-    String sql = "SELECT r.*, c.nome AS cliente_nome, q.numero AS quarto_numero, q.tipo AS quarto_tipo, q.status AS quarto_status " +
-                 "FROM Reserva r " +
-                 "LEFT JOIN Cliente c ON r.clienteId = c.id " +
-                 "LEFT JOIN Quarto q ON r.quartoId = q.id " +
-                 "WHERE r.quartoId = ? " +
-                 "ORDER BY r.id";
+    String sql = "SELECT r.*, c.nome AS cliente_nome, q.numero AS quarto_numero, " +
+        "q.tipo AS quarto_tipo, q.status AS quarto_status, q.valor AS quarto_preco, p.forma_pagamento AS forma_pagamento " +
+        "FROM Reserva r " +
+        "LEFT JOIN Cliente c ON r.clienteId = c.id " +
+        "LEFT JOIN Quarto q ON r.quartoId = q.id " +
+        "LEFT JOIN Pagamento p ON r.id = p.reservaId " +
+        "WHERE r.quartoId = ? " +
+        "ORDER BY r.id";
 
     List<Reserva> results = jdbcTemplate.query(sql, (rs, rowNum) -> {
       Reserva reserva = new Reserva(
-        rs.getInt("id"),
-        ReservaStatus.valueOf(rs.getString("status")),
-        rs.getTimestamp("data"),
-        rs.getInt("funcionarioId"),
-        rs.getInt("clienteId"),
-        rs.getInt("quartoId"),
-        rs.getString("cliente_nome"),
-        rs.getString("quarto_numero"),
-        QuartoTipo.valueOf(rs.getString("quarto_tipo")),
-        QuartoStatus.valueOf(rs.getString("quarto_status"))
-      );
+          rs.getInt("id"),
+          ReservaStatus.valueOf(rs.getString("status")),
+          rs.getTimestamp("data_checkin"),
+          rs.getTimestamp("data_checkout"),
+          rs.getInt("funcionarioId"),
+          rs.getInt("clienteId"),
+          rs.getInt("quartoId"),
+          rs.getString("cliente_nome"),
+          rs.getString("quarto_numero"),
+          QuartoTipo.valueOf(rs.getString("quarto_tipo")),
+          QuartoStatus.valueOf(rs.getString("quarto_status")),
+          rs.getDouble("quarto_preco"),
+          FormaPagamento.valueOf(rs.getString("forma_pagamento")));
 
       return reserva;
     }, quartoId);
 
     return results;
-}
+  }
 
   public Optional<Reserva> create(Optional<Reserva> data) {
     if (data.isPresent()) {
@@ -115,11 +128,10 @@ public class ReservaRepository {
       String sql = "INSERT INTO Reserva (funcionarioId, clienteId, quartoId) VALUES (?, ?, ?)";
 
       jdbcTemplate.update(
-        sql,
-        reserva.getFuncionarioId(),
-        reserva.getClienteId(),
-        reserva.getQuartoId()
-      );
+          sql,
+          reserva.getFuncionarioId(),
+          reserva.getClienteId(),
+          reserva.getQuartoId());
 
       return Optional.of(reserva);
     }
@@ -145,13 +157,12 @@ public class ReservaRepository {
       String sqlUpdate = "UPDATE Reserva SET status = ?, funcionarioId = ?, clienteId = ?, quartoId = ? WHERE id = ?";
 
       jdbcTemplate.update(
-        sqlUpdate,
-        reserva.getStatus().toString(),
-        reserva.getFuncionarioId(),
-        reserva.getClienteId(),
-        reserva.getQuartoId(),
-        id
-      );
+          sqlUpdate,
+          reserva.getStatus().toString(),
+          reserva.getFuncionarioId(),
+          reserva.getClienteId(),
+          reserva.getQuartoId(),
+          id);
 
       reserva.setId(id);
       return Optional.of(reserva);
