@@ -47,16 +47,20 @@ public class CustomerRepository {
     return results.stream().toList();
   }
 
-  public List<Customer> getAllByName(String nome) {
+  public List<Customer> getAllByName(String nome, Integer page, Integer size) {
     String sql;
     Map<String, Object> params = new HashMap<>();
+
+    int offset = (page - 1) * size;
     
     if (nome == null || nome.isEmpty()) {
-        sql = "SELECT * FROM Cliente c";
+        sql = "SELECT * FROM Cliente c LIMIT :limit OFFSET :offset";
     } else {
-        sql = "SELECT * FROM Cliente WHERE nome LIKE :nome";
+        sql = "SELECT * FROM Cliente WHERE nome LIKE :nome LIMIT :limit OFFSET :offset";
         params.put("nome", "%" + nome + "%");
     }
+    params.put("limit", size);
+    params.put("offset", offset);
 
     List<Customer> results = namedParameterJdbcTemplate.query(sql, params, rowMapper);
 

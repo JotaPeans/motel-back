@@ -22,8 +22,8 @@ public class CustomerService {
     return this.repository.getCustomerByRoomId(id);
   }
 
-  public List<Customer> getAll(String nome) {
-    return this.repository.getAllByName(nome);
+  public List<Customer> getAll(String nome, Integer page, Integer size) {
+    return this.repository.getAllByName(nome, page, size);
   }
 
   public Optional<Customer> getById(Integer id) {

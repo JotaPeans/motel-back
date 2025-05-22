@@ -30,8 +30,10 @@ public class CustomerController extends PrivateController {
     @GetMapping
     public ResponseEntity<List<Customer>> getCustomers(
             HttpServletRequest request,
-            @RequestParam(required = false) String nome) {
-        List<Customer> response = service.getAll(nome);
+            @RequestParam(required = false) String nome,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        List<Customer> response = service.getAll(nome, page, size);
         return ResponseEntity.ok(response);
     }
 
