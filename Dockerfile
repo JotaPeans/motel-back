@@ -14,4 +14,4 @@ COPY pom.xml .
 COPY src /app/src
 
 # Compile o projeto
-CMD [ "mvn spring-boot:run" ]
+RUN mvn spring-boot:run
