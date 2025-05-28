@@ -23,62 +23,61 @@ public class QuartoRepository {
     this.jdbcTemplate = new JdbcTemplate(dataSource); // Usando o DataSource configurado
   }
 
-  public List<Quarto> getAll() {
+  public List<Quarto> getAll(String room_type) {
     String sql = "SELECT q.*, " +
-                  "MAX(CASE " +
-                  "   WHEN r.status = 'CONFIRMADA' THEN r.id " +
-                  "   ELSE NULL " +
-                  "END) AS reserva_id, " +
-                  "MAX(CASE " +
-                  "   WHEN r.status = 'CONFIRMADA' THEN c.nome " +
-                  "   ELSE NULL " +
-                  "END) AS cliente_nome " +
-                  "FROM Quarto q " +
-                  "LEFT JOIN Reserva r ON q.id = r.quartoId " +
-                  "LEFT JOIN Cliente c ON r.clienteId = c.id " +
-                  "GROUP BY q.id, q.numero, q.tipo, q.status";
-  
+        "MAX(CASE " +
+        "   WHEN r.status = 'CONFIRMADA' THEN r.id " +
+        "   ELSE NULL " +
+        "END) AS reserva_id, " +
+        "MAX(CASE " +
+        "   WHEN r.status = 'CONFIRMADA' THEN c.nome " +
+        "   ELSE NULL " +
+        "END) AS cliente_nome " +
+        "FROM Quarto q " +
+        "LEFT JOIN Reserva r ON q.id = r.quartoId " +
+        "LEFT JOIN Cliente c ON r.clienteId = c.id " +
+        "WHERE q.tipo like ? " +
+        "GROUP BY q.id, q.numero, q.tipo, q.status";
+
     List<Quarto> results = jdbcTemplate.query(sql, (rs, rowNum) -> {
       Quarto quarto = new Quarto(
-        rs.getInt("id"),
-        rs.getInt("numero"),
-        QuartoTipo.valueOf(rs.getString("tipo")),
-        QuartoStatus.valueOf(rs.getString("status")),
-        rs.getFloat("valor"),
-        rs.getString("cliente_nome"),
-        rs.getInt("reserva_id")
-      );
+          rs.getInt("id"),
+          rs.getInt("numero"),
+          QuartoTipo.valueOf(rs.getString("tipo")),
+          QuartoStatus.valueOf(rs.getString("status")),
+          rs.getFloat("valor"),
+          rs.getString("cliente_nome"),
+          rs.getInt("reserva_id"));
       return quarto;
-    });
-  
+    }, room_type.toString());
+
     return results;
   }
 
   public Optional<Quarto> getById(Integer id) {
     String sql = "SELECT q.*, " +
-               "r.id AS reserva_id, " +
-               "CASE " +
-               "    WHEN r.status = 'CONFIRMADA' THEN c.nome " +
-               "    ELSE NULL " +
-               "END AS cliente_nome " +
-               "FROM Quarto q " +
-               "LEFT JOIN Reserva r ON q.id = r.quartoId AND r.status = 'CONFIRMADA' " +
-               "LEFT JOIN Cliente c ON r.clienteId = c.id " +
-               "WHERE q.id = ?";
+        "r.id AS reserva_id, " +
+        "CASE " +
+        "    WHEN r.status = 'CONFIRMADA' THEN c.nome " +
+        "    ELSE NULL " +
+        "END AS cliente_nome " +
+        "FROM Quarto q " +
+        "LEFT JOIN Reserva r ON q.id = r.quartoId AND r.status = 'CONFIRMADA' " +
+        "LEFT JOIN Cliente c ON r.clienteId = c.id " +
+        "WHERE q.id = ?";
 
     List<Quarto> results = jdbcTemplate.query(sql, (rs, rowNum) -> {
       Quarto quarto = new Quarto(
-        rs.getInt("id"),
-        rs.getInt("numero"),
-        QuartoTipo.valueOf(rs.getString("tipo")),
-        QuartoStatus.valueOf(rs.getString("status")),
-        rs.getFloat("valor"),
-        rs.getString("cliente_nome"),
-        rs.getInt("reserva_id")
-      );
+          rs.getInt("id"),
+          rs.getInt("numero"),
+          QuartoTipo.valueOf(rs.getString("tipo")),
+          QuartoStatus.valueOf(rs.getString("status")),
+          rs.getFloat("valor"),
+          rs.getString("cliente_nome"),
+          rs.getInt("reserva_id"));
       return quarto;
     }, id);
-    
+
     return results.stream().findFirst();
   }
 
@@ -88,12 +87,11 @@ public class QuartoRepository {
       String sql = "INSERT INTO Quarto (numero, tipo, status, valor) VALUES (?, ?, ?, ?)";
 
       jdbcTemplate.update(
-        sql,
-        quarto.getNumero(),
-        quarto.getTipo() != null ? quarto.getTipo().toString() : QuartoTipo.SUITE.toString(),
-        quarto.getStatus() != null ? quarto.getStatus().toString() : QuartoStatus.DISPONIVEL.toString(),
-        quarto.getValor()
-      );
+          sql,
+          quarto.getNumero(),
+          quarto.getTipo() != null ? quarto.getTipo().toString() : QuartoTipo.SUITE.toString(),
+          quarto.getStatus() != null ? quarto.getStatus().toString() : QuartoStatus.DISPONIVEL.toString(),
+          quarto.getValor());
       return Optional.of(quarto);
     }
     return null;
@@ -113,12 +111,11 @@ public class QuartoRepository {
       String sqlUpdate = "UPDATE Quarto SET numero = ?, tipo = ?, status = ? WHERE id = ?";
 
       jdbcTemplate.update(
-        sqlUpdate,
-        quarto.getNumero(),
-        quarto.getTipo() != null ? quarto.getTipo().toString() : QuartoTipo.SUITE.toString(),
-        quarto.getStatus() != null ? quarto.getStatus().toString() : QuartoStatus.DISPONIVEL.toString(),
-        id
-      );
+          sqlUpdate,
+          quarto.getNumero(),
+          quarto.getTipo() != null ? quarto.getTipo().toString() : QuartoTipo.SUITE.toString(),
+          quarto.getStatus() != null ? quarto.getStatus().toString() : QuartoStatus.DISPONIVEL.toString(),
+          id);
 
       quarto.setId(id);
       return Optional.of(quarto);
@@ -141,6 +138,5 @@ public class QuartoRepository {
       throw new RuntimeException("Quarto não encontrado para o ID: " + id);
     }
   }
-
 
 }

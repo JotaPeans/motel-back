@@ -23,52 +23,53 @@ public class ConsumoRepository {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public List<Consumo> getAll(int page, int size) {
+    public List<Consumo> getAll(String year, String produto_id, int page, int size) {
         int offset = (page - 1) * size;
         String sql = "SELECT cs.*, c.nome AS cliente_nome, p.nome AS produto_nome, s.nome AS servico_nome " +
-                     "FROM Consumo cs " +
-                     "LEFT JOIN Cliente c ON cs.clienteId = c.id " +
-                     "LEFT JOIN Produto p ON cs.produtoId = p.id " +
-                     "LEFT JOIN Servico s ON cs.servicoId = s.id " +
-                     "ORDER BY cs.data_consumo DESC LIMIT ? OFFSET ?";
+                "FROM Consumo cs " +
+                "LEFT JOIN Cliente c ON cs.clienteId = c.id " +
+                "LEFT JOIN Produto p ON cs.produtoId = p.id " +
+                "LEFT JOIN Servico s ON cs.servicoId = s.id " +
+                "WHERE YEAR(cs.data_consumo) = ? AND " +
+                "( (? = '0' AND (cs.produtoId IS NULL OR cs.produtoId LIKE '%')) OR (? != '0' AND cs.produtoId = ?) )" +
+                "ORDER BY cs.data_consumo " +
+                "DESC LIMIT ? OFFSET ?";
 
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             return new Consumo(
-                rs.getInt("id"),
-                (Integer) rs.getObject("produtoId"),
-                (Integer) rs.getObject("servicoId"),
-                rs.getInt("clienteId"),
-                rs.getTimestamp("data_consumo"),
-                rs.getInt("quantidade"),
-                rs.getDouble("valor"),
-                rs.getString("cliente_nome"),
-                rs.getString("produto_nome"),
-                rs.getString("servico_nome")
-            );
-        }, size, offset);
+                    rs.getInt("id"),
+                    (Integer) rs.getObject("produtoId"),
+                    (Integer) rs.getObject("servicoId"),
+                    rs.getInt("clienteId"),
+                    rs.getTimestamp("data_consumo"),
+                    rs.getInt("quantidade"),
+                    rs.getDouble("valor"),
+                    rs.getString("cliente_nome"),
+                    rs.getString("produto_nome"),
+                    rs.getString("servico_nome"));
+        }, year, produto_id, produto_id, produto_id, size, offset);
     }
 
     public Optional<Consumo> getById(Integer id) {
         String sql = "SELECT cs.*, c.nome AS cliente_nome, p.nome AS produto_nome, s.nome AS servico_nome " +
-                     "FROM Consumo cs " +
-                     "LEFT JOIN Cliente c ON cs.clienteId = c.id " +
-                     "LEFT JOIN Produto p ON cs.produtoId = p.id " +
-                     "LEFT JOIN Servico s ON cs.servicoId = s.id " +
-                     "WHERE cs.id = ?";
+                "FROM Consumo cs " +
+                "LEFT JOIN Cliente c ON cs.clienteId = c.id " +
+                "LEFT JOIN Produto p ON cs.produtoId = p.id " +
+                "LEFT JOIN Servico s ON cs.servicoId = s.id " +
+                "WHERE cs.id = ?";
 
         List<Consumo> results = jdbcTemplate.query(sql, (rs, rowNum) -> {
             return new Consumo(
-                rs.getInt("id"),
-                (Integer) rs.getObject("produtoId"),
-                (Integer) rs.getObject("servicoId"),
-                rs.getInt("clienteId"),
-                rs.getTimestamp("data_consumo"),
-                rs.getInt("quantidade"),
-                rs.getDouble("valor"),
-                rs.getString("cliente_nome"),
-                rs.getString("produto_nome"),
-                rs.getString("servico_nome")
-            );
+                    rs.getInt("id"),
+                    (Integer) rs.getObject("produtoId"),
+                    (Integer) rs.getObject("servicoId"),
+                    rs.getInt("clienteId"),
+                    rs.getTimestamp("data_consumo"),
+                    rs.getInt("quantidade"),
+                    rs.getDouble("valor"),
+                    rs.getString("cliente_nome"),
+                    rs.getString("produto_nome"),
+                    rs.getString("servico_nome"));
         }, id);
 
         return results.stream().findFirst();
@@ -76,26 +77,25 @@ public class ConsumoRepository {
 
     public List<Consumo> getByClienteId(Integer clienteId) {
         String sql = "SELECT cs.*, c.nome AS cliente_nome, p.nome AS produto_nome, s.nome AS servico_nome " +
-                     "FROM Consumo cs " +
-                     "LEFT JOIN Cliente c ON cs.clienteId = c.id " +
-                     "LEFT JOIN Produto p ON cs.produtoId = p.id " +
-                     "LEFT JOIN Servico s ON cs.servicoId = s.id " +
-                     "WHERE cs.clienteId = ? " +
-                     "ORDER BY cs.data_consumo DESC";
+                "FROM Consumo cs " +
+                "LEFT JOIN Cliente c ON cs.clienteId = c.id " +
+                "LEFT JOIN Produto p ON cs.produtoId = p.id " +
+                "LEFT JOIN Servico s ON cs.servicoId = s.id " +
+                "WHERE cs.clienteId = ? " +
+                "ORDER BY cs.data_consumo DESC";
 
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             return new Consumo(
-                rs.getInt("id"),
-                (Integer) rs.getObject("produtoId"),
-                (Integer) rs.getObject("servicoId"),
-                rs.getInt("clienteId"),
-                rs.getTimestamp("data_consumo"),
-                rs.getInt("quantidade"),
-                rs.getDouble("valor"),
-                rs.getString("cliente_nome"),
-                rs.getString("produto_nome"),
-                rs.getString("servico_nome")
-            );
+                    rs.getInt("id"),
+                    (Integer) rs.getObject("produtoId"),
+                    (Integer) rs.getObject("servicoId"),
+                    rs.getInt("clienteId"),
+                    rs.getTimestamp("data_consumo"),
+                    rs.getInt("quantidade"),
+                    rs.getDouble("valor"),
+                    rs.getString("cliente_nome"),
+                    rs.getString("produto_nome"),
+                    rs.getString("servico_nome"));
         }, clienteId);
     }
 
@@ -133,14 +133,13 @@ public class ConsumoRepository {
 
             String sqlUpdate = "UPDATE Consumo SET produtoId = ?, servicoId = ?, clienteId = ?, quantidade = ?, valor = ? WHERE id = ?";
             jdbcTemplate.update(
-                sqlUpdate,
-                consumo.getProdutoId(),
-                consumo.getServicoId(),
-                consumo.getClienteId(),
-                consumo.getQuantidade(),
-                consumo.getValor(),
-                id
-            );
+                    sqlUpdate,
+                    consumo.getProdutoId(),
+                    consumo.getServicoId(),
+                    consumo.getClienteId(),
+                    consumo.getQuantidade(),
+                    consumo.getValor(),
+                    id);
 
             consumo.setId(id);
             return Optional.of(consumo);

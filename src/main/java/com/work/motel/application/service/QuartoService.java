@@ -18,8 +18,8 @@ public class QuartoService {
     this.repository = repository;
   }
 
-  public List<Quarto> getAll() {
-    return this.repository.getAll();
+  public List<Quarto> getAll(String room_type) {
+    return this.repository.getAll(room_type);
   }
 
   public Optional<Quarto> getById(Integer id) {

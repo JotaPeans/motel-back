@@ -15,8 +15,8 @@ public class ConsumoService {
     @Autowired
     private ConsumoRepository consumoRepository;
 
-    public List<Consumo> getAll(int page, int size) {
-        return consumoRepository.getAll(page, size);
+    public List<Consumo> getAll(String year, String produto_id, int page, int size) {
+        return consumoRepository.getAll(year, produto_id, page, size);
     }
 
     public Optional<Consumo> getConsumoById(Integer id) {

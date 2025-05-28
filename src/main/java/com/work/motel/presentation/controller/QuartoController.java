@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.work.motel.application.service.QuartoService;
@@ -24,11 +25,11 @@ import com.work.motel.domain.entities.Quarto;
 public class QuartoController extends PrivateController {
 
   @Autowired
-  private QuartoService service;  // Injeção de dependência diretamente no campo
-  
+  private QuartoService service; // Injeção de dependência diretamente no campo
+
   @GetMapping
-  public ResponseEntity<List<Quarto>> getAllRooms() {
-    List<Quarto> response = service.getAll();
+  public ResponseEntity<List<Quarto>> getAllRooms(@RequestParam(defaultValue = "%") String room_type) {
+    List<Quarto> response = service.getAll(room_type);
     return ResponseEntity.ok(response);
   }
 
@@ -41,8 +42,8 @@ public class QuartoController extends PrivateController {
   @PostMapping
   public ResponseEntity<?> createRoom(@RequestBody Optional<Quarto> data) {
     Optional<Quarto> response = service.create(data);
-    
-    if(response == null) {
+
+    if (response == null) {
       Map<String, String> erro = new HashMap<>();
       erro.put("mensagem", "Voce deve enviar ao menos o numero do quarto");
       erro.put("codigo", "400");
@@ -54,8 +55,8 @@ public class QuartoController extends PrivateController {
   @PutMapping("/{id}")
   public ResponseEntity<?> updateRoom(@PathVariable Integer id, @RequestBody Optional<Quarto> data) {
     Optional<Quarto> response = service.update(id, data);
-    
-    if(response == null) {
+
+    if (response == null) {
       Map<String, String> erro = new HashMap<>();
       erro.put("mensagem", "Voce deve enviar ao menos o numero do quarto");
       erro.put("codigo", "400");
@@ -67,7 +68,7 @@ public class QuartoController extends PrivateController {
   @DeleteMapping("/{id}")
   public ResponseEntity<?> deleteRoom(@PathVariable Integer id) {
     service.delete(id);
-    
+
     return ResponseEntity.ok(null);
   }
 }

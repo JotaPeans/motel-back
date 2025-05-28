@@ -28,16 +28,19 @@ public class ReservaRepository {
     this.jdbcTemplate = new JdbcTemplate(dataSource); // Usando o DataSource configurado
   }
 
-  public List<Reserva> getAll(int page, int size) {
+  public List<Reserva> getAll(String ano_reserva,
+      String room_type, int page, int size) {
     // Calculando o offset para a paginação
     int offset = (page - 1) * size;
 
     String sql = "SELECT r.*, c.nome AS cliente_nome, q.numero AS quarto_numero, " +
-        "q.tipo AS quarto_tipo, q.status AS quarto_status, q.valor AS quarto_preco, p.forma_pagamento AS forma_pagamento " +
+        "q.tipo AS quarto_tipo, q.status AS quarto_status, q.valor AS quarto_preco, p.forma_pagamento AS forma_pagamento "
+        +
         "FROM Reserva r " +
         "LEFT JOIN Cliente c ON r.clienteId = c.id " +
         "LEFT JOIN Quarto q ON r.quartoId = q.id " +
         "LEFT JOIN Pagamento p ON r.id = p.reservaId " +
+        "WHERE YEAR(r.data_checkout) = ? AND q.tipo like ? " +
         "ORDER BY r.data_checkin DESC LIMIT ? OFFSET ?";
 
     List<Reserva> results = jdbcTemplate.query(sql, (rs, rowNum) -> {
@@ -57,14 +60,15 @@ public class ReservaRepository {
           FormaPagamento.valueOf(rs.getString("forma_pagamento")));
 
       return reserva;
-    }, size, offset);
+    }, ano_reserva, room_type, size, offset);
 
     return results;
   }
 
   public Optional<Reserva> getById(Integer id) {
     String sql = "SELECT r.*, c.nome AS cliente_nome, q.numero AS quarto_numero, " +
-        "q.tipo AS quarto_tipo, q.status AS quarto_status, q.valor AS quarto_preco, p.forma_pagamento AS forma_pagamento " +
+        "q.tipo AS quarto_tipo, q.status AS quarto_status, q.valor AS quarto_preco, p.forma_pagamento AS forma_pagamento "
+        +
         "FROM Reserva r " +
         "LEFT JOIN Cliente c ON r.clienteId = c.id " +
         "LEFT JOIN Quarto q ON r.quartoId = q.id " +
@@ -95,7 +99,8 @@ public class ReservaRepository {
 
   public List<Reserva> getByRoomId(Integer quartoId) {
     String sql = "SELECT r.*, c.nome AS cliente_nome, q.numero AS quarto_numero, " +
-        "q.tipo AS quarto_tipo, q.status AS quarto_status, q.valor AS quarto_preco, p.forma_pagamento AS forma_pagamento " +
+        "q.tipo AS quarto_tipo, q.status AS quarto_status, q.valor AS quarto_preco, p.forma_pagamento AS forma_pagamento "
+        +
         "FROM Reserva r " +
         "LEFT JOIN Cliente c ON r.clienteId = c.id " +
         "LEFT JOIN Quarto q ON r.quartoId = q.id " +

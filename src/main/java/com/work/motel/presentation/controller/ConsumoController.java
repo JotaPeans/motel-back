@@ -28,8 +28,10 @@ public class ConsumoController extends PrivateController {
     @GetMapping
     public ResponseEntity<List<Consumo>> getAllConsumos(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        List<Consumo> response = service.getAll(page, size);
+            @RequestParam(defaultValue = "10") int size, 
+            @RequestParam(required = false) String ano_consumo, 
+            @RequestParam(defaultValue = "0") String produto_id) {
+        List<Consumo> response = service.getAll(ano_consumo, produto_id, page, size);
         return ResponseEntity.ok(response);
     }
 
