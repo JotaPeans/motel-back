@@ -37,9 +37,9 @@ public class ReservaRepository {
         "q.tipo AS quarto_tipo, q.status AS quarto_status, q.valor AS quarto_preco, p.forma_pagamento AS forma_pagamento "
         +
         "FROM Reserva r " +
-        "LEFT JOIN Cliente c ON r.clienteId = c.id " +
-        "LEFT JOIN Quarto q ON r.quartoId = q.id " +
-        "LEFT JOIN Pagamento p ON r.id = p.reservaId " +
+        "JOIN Cliente c ON r.clienteId = c.id " +
+        "JOIN Quarto q ON r.quartoId = q.id " +
+        "JOIN Pagamento p ON r.id = p.reservaId " +
         "WHERE YEAR(r.data_checkout) = ? AND q.tipo like ? " +
         "ORDER BY r.data_checkin DESC LIMIT ? OFFSET ?";
 

@@ -31,7 +31,7 @@ public class ConsumoRepository {
                 "LEFT JOIN Produto p ON cs.produtoId = p.id " +
                 "LEFT JOIN Servico s ON cs.servicoId = s.id " +
                 "WHERE YEAR(cs.data_consumo) = ? AND " +
-                "( (? = '0' AND (cs.produtoId IS NULL OR cs.produtoId LIKE '%')) OR (? != '0' AND cs.produtoId = ?) )" +
+                "( (? = '0' AND (cs.produtoId IS NULL OR cs.produtoId LIKE '%')) OR (? != '0' AND cs.produtoId = ?) ) " +
                 "ORDER BY cs.data_consumo " +
                 "DESC LIMIT ? OFFSET ?";
 
